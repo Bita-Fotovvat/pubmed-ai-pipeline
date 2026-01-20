@@ -1,17 +1,20 @@
-from dotenv import load_dotenv
 import os
 from sqlalchemy import create_engine, text
+from dotenv import load_dotenv
 
-load_dotenv()
+def main():
+    load_dotenv()  # <-- loads .env from project root
 
-DATABASE_URL = os.getenv("DATABASE_URL")
-if not DATABASE_URL:
-    raise ValueError("DATABASE_URL not set")
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise RuntimeError("DATABASE_URL is not set (check your .env file)")
 
-engine = create_engine(DATABASE_URL)
+    engine = create_engine(database_url)
 
-with engine.begin() as conn:
-    conn.execute(text("TRUNCATE article_enrichment CASCADE;"))
-    conn.execute(text("TRUNCATE pubmed_articles CASCADE;"))
+    with engine.begin() as conn:
+        conn.execute(text("TRUNCATE TABLE pubmed_articles CASCADE;"))
 
-print("✅ Database cleared successfully.")
+    print("✅ Database reset complete (TRUNCATE pubmed_articles CASCADE).")
+
+if __name__ == "__main__":
+    main()

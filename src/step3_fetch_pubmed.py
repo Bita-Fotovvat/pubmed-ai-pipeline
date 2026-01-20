@@ -1,13 +1,23 @@
 import json
+import os
 from pathlib import Path
+
+from dotenv import load_dotenv
 from pubmed_client import esearch, esummary
 
 
 def main():
-    # Change this query to your research topic any time
-    # gut microbiota AND anxiety
-    query = '("gut microbiota" AND (anxiety)) AND ("2015"[dp] : "3000"[dp])'
+    # Load .env so PUBMED_QUERY is available
+    load_dotenv()
 
+    # Read query from environment (set by run_dashboard.py)
+    # Fallback is only for safety if someone runs this file directly
+    query = os.getenv(
+        "PUBMED_QUERY",
+        '(gut microbiota AND anxiety) AND (2015[dp] : 3000[dp])'
+    )
+
+    print(f"🔍 Using PubMed query:\n{query}\n")
 
     # 1) Get PMIDs
     pmids = esearch(query=query, retmax=20)

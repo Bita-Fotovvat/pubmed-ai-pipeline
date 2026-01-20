@@ -42,3 +42,25 @@ SELECT *
 FROM vw_articles_enriched
 WHERE relevance_score >= 70
 ORDER BY processed_at DESC;
+
+-- 5) Publications by year (trend line)
+CREATE OR REPLACE VIEW vw_pubs_by_year AS
+SELECT
+  CAST(NULLIF(substring(pubdate from '([0-9]{4})'), '') AS INT) AS pub_year,
+  COUNT(*) AS paper_count
+FROM pubmed_articles
+WHERE substring(pubdate from '([0-9]{4})') IS NOT NULL
+GROUP BY pub_year
+ORDER BY pub_year;
+
+-- 6) Category over time (stacked area)
+CREATE OR REPLACE VIEW vw_category_over_time AS
+SELECT
+  CAST(NULLIF(substring(a.pubdate from '([0-9]{4})'), '') AS INT) AS pub_year,
+  e.topic_category,
+  COUNT(*) AS paper_count
+FROM pubmed_articles a
+JOIN article_enrichment e ON e.pmid = a.pmid
+WHERE substring(a.pubdate from '([0-9]{4})') IS NOT NULL
+GROUP BY pub_year, e.topic_category
+ORDER BY pub_year, paper_count DESC;
