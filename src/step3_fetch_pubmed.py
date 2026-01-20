@@ -5,7 +5,8 @@ from pubmed_client import esearch, esummary
 
 def main():
     # Change this query to your research topic any time
-    query = '("salt crystallization" AND (masonry OR brick OR mortar)) AND ("2015"[dp] : "3000"[dp])'
+    # gut microbiota AND anxiety
+    query = '("gut microbiota" AND (anxiety)) AND ("2015"[dp] : "3000"[dp])'
 
 
     # 1) Get PMIDs
